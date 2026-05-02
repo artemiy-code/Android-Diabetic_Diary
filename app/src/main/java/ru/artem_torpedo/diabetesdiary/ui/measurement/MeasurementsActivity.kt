@@ -82,7 +82,6 @@ class MeasurementsActivity : AppCompatActivity() {
             }
         }
 
-
         filterButton = findViewById(R.id.filterButton)
 
         filterButton.setOnClickListener {
