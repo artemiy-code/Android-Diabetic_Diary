@@ -40,7 +40,7 @@ class MeasurementsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measurements)
 
-        val toolbar =  findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -118,7 +118,10 @@ class MeasurementsActivity : AppCompatActivity() {
                 measurements.map { m ->
                     buildString {
                         append(formatDate(m.dateTime))
-                        append("\nСахар: ${m.glucoseLevel} ммоль/л")
+
+                        m.glucoseLevel?.let {
+                            append("\nСахар: ${m.glucoseLevel} ммоль/л")
+                        }
 
                         m.insulinUnits?.let {
                             append("\nИнсулин: $it ЕД")
@@ -153,7 +156,7 @@ class MeasurementsActivity : AppCompatActivity() {
         val commentInput = dialogView.findViewById<android.widget.EditText>(R.id.commentInput)
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Новое измерение")
+            .setTitle("Новая запись")
             .setView(dialogView)
             .setPositiveButton("Сохранить", null)
             .setNegativeButton("Отмена", null)
@@ -162,32 +165,27 @@ class MeasurementsActivity : AppCompatActivity() {
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
 
-                val glucoseRaw = glucoseInput.text.toString().replace(',', '.').trim()
-                val glucose = glucoseRaw.toFloatOrNull()
-                if (glucose == null) {
-                    glucoseInput.error = "Введите число"
-                    glucoseInput.requestFocus()
-                    Toast.makeText(this, "Введите корректный сахар", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                val glucose = run {
+                    val raw = glucoseInput.text.toString().replace(',', '.').trim()
+                    if (raw.isBlank()) null
+                    else {
+                        val v = raw.toFloat()
+                        if (v <= 1f || v > 30f) {
+                            glucoseInput.error = "Диапазон 1–30"
+                            glucoseInput.requestFocus()
+                            Toast.makeText(this, "Аномальный сахар", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                        v
+                    }
                 }
-                if (glucose <= 1f || glucose > 30f) {
-                    glucoseInput.error = "Диапазон 1–30"
-                    glucoseInput.requestFocus()
-                    Toast.makeText(this, "Аномальный сахар", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnClickListener
-                }
+
 
                 val insulin = run {
                     val raw = insulinInput.text.toString().replace(',', '.').trim()
-                    if (raw.isBlank()) null else {
-                        val v = raw.toFloatOrNull()
-                        if (v == null) {
-                            insulinInput.error = "Введите число"
-                            insulinInput.requestFocus()
-                            Toast.makeText(this, "Некорректный инсулин", Toast.LENGTH_SHORT).show()
-                            return@setOnClickListener
-                        }
+                    if (raw.isBlank()) null
+                    else {
+                        val v = raw.toFloat()
                         if (v !in 1f..100f) {
                             insulinInput.error = "Диапазон 1–100"
                             insulinInput.requestFocus()
@@ -201,13 +199,7 @@ class MeasurementsActivity : AppCompatActivity() {
                 val breadUnits = run {
                     val raw = breadInput.text.toString().replace(',', '.').trim()
                     if (raw.isBlank()) null else {
-                        val v = raw.toFloatOrNull()
-                        if (v == null) {
-                            breadInput.error = "Введите число"
-                            breadInput.requestFocus()
-                            Toast.makeText(this, "Некорректные ХЕ", Toast.LENGTH_SHORT).show()
-                            return@setOnClickListener
-                        }
+                        val v = raw.toFloat()
                         if (v !in 0f..40f) {
                             breadInput.error = "Диапазон 0–40"
                             breadInput.requestFocus()
@@ -219,6 +211,11 @@ class MeasurementsActivity : AppCompatActivity() {
                 }
 
                 val comment = commentInput.text.toString().trim().takeIf { it.isNotBlank() }
+
+                if (glucose == null && insulin == null && breadUnits == null && comment == null) {
+                    Toast.makeText(this, "Заполните хотя бы одно поле", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
                 viewModel.addMeasurement(
                     profileId = profileId,
@@ -275,6 +272,7 @@ class MeasurementsActivity : AppCompatActivity() {
         viewModel.loadMeasurements(profileId)
         Toast.makeText(this, "Фильтр сброшен", Toast.LENGTH_SHORT).show()
     }
+
     private fun updateFilterButtonState() {
         if (!::filterButton.isInitialized) return
 
@@ -323,7 +321,7 @@ class MeasurementsActivity : AppCompatActivity() {
 
     private fun showDeleteDialog(
         profileId: Long,
-        measurement: MeasurementEntity
+        measurement: MeasurementEntity,
     ) {
         AlertDialog.Builder(this)
             .setTitle("Удалить измерение?")

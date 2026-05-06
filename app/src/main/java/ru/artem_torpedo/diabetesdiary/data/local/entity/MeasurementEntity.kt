@@ -8,7 +8,7 @@ data class MeasurementEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val profileId: Long,
-    val glucoseLevel: Float,
+    val glucoseLevel: Float? = null,
     val insulinUnits: Float? = null,
     val breadUnits: Float? = null,
     val dateTime: Long,

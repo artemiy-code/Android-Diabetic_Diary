@@ -25,7 +25,7 @@ class MeasurementViewModel(application: Application) :
 
     fun addMeasurement(
         profileId: Long,
-        glucose: Float,
+        glucose: Float?,
         insulin: Float?,
         breadUnits: Float?,
         comment: String?
