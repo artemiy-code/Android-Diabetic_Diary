@@ -170,8 +170,8 @@ class MeasurementsActivity : AppCompatActivity() {
                     if (raw.isBlank()) null
                     else {
                         val v = raw.toFloat()
-                        if (v <= 1f || v > 30f) {
-                            glucoseInput.error = "Диапазон 1–30"
+                        if (v <= 1f || v > 70f) {
+                            glucoseInput.error = "Диапазон 1–70"
                             glucoseInput.requestFocus()
                             Toast.makeText(this, "Аномальный сахар", Toast.LENGTH_SHORT).show()
                             return@setOnClickListener
@@ -186,8 +186,8 @@ class MeasurementsActivity : AppCompatActivity() {
                     if (raw.isBlank()) null
                     else {
                         val v = raw.toFloat()
-                        if (v !in 1f..100f) {
-                            insulinInput.error = "Диапазон 1–100"
+                        if (v !in 1f..200f) {
+                            insulinInput.error = "Диапазон 1–200"
                             insulinInput.requestFocus()
                             Toast.makeText(this, "Аномальный инсулин", Toast.LENGTH_SHORT).show()
                             return@setOnClickListener
