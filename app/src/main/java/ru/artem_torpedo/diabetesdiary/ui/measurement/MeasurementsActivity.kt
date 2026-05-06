@@ -217,6 +217,12 @@ class MeasurementsActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
+
+                if (insulin != null && breadUnits != null && insulin / breadUnits > 4) {
+                    Toast.makeText(this, "Нельзя вводить столько инсулина!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 viewModel.addMeasurement(
                     profileId = profileId,
                     glucose = glucose,
