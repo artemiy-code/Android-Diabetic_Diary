@@ -159,17 +159,14 @@ class StatisticsActivity : AppCompatActivity() {
         chart.isDragEnabled = true
         chart.setScaleEnabled(true)
         chart.setPinchZoom(true)
-        chart.setNoDataText("Нет данных по сахару за период")
+        chart.setNoDataText("Нет данных за период")
 
         val axisTextColor = "#B0B0B0".toColorInt()
-
-
 
         val rightAxis = chart.axisRight
         rightAxis.textColor = axisTextColor
 
         chart.legend.textColor = axisTextColor
-
 
         chart.axisRight.isEnabled = false
 

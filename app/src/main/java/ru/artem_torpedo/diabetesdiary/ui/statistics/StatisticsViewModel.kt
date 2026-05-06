@@ -54,14 +54,18 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
                 .getMeasurementsByDateRange(profileId, fromDate, toDate)
                 .sortedBy { it.dateTime }
 
-            val points = measurements.map { ChartPoint(it.dateTime, it.glucoseLevel) }
+            val glucoseMeasurements = measurements.filter { it.glucoseLevel != null }
 
-            val avg = if (measurements.isNotEmpty()) {
-                (measurements.sumOf { it.glucoseLevel.toDouble() } / measurements.size).toFloat()
+            val points = glucoseMeasurements.map {
+                ChartPoint(it.dateTime, it.glucoseLevel!!)
+            }
+
+            val avg = if (glucoseMeasurements.isNotEmpty()) {
+                (glucoseMeasurements.sumOf { it.glucoseLevel!!.toDouble() } / glucoseMeasurements.size).toFloat()
             } else null
 
-            val min = measurements.minByOrNull { it.glucoseLevel }?.glucoseLevel
-            val max = measurements.maxByOrNull { it.glucoseLevel }?.glucoseLevel
+            val min = glucoseMeasurements.minByOrNull { it.glucoseLevel!! }?.glucoseLevel
+            val max = glucoseMeasurements.maxByOrNull { it.glucoseLevel!! }?.glucoseLevel
 
             // ===== ПИТАНИЕ =====
             val foodEntries = foodRepository
@@ -119,7 +123,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
                     avgGlucose = avg,
                     minGlucose = min,
                     maxGlucose = max,
-                    count = measurements.size,
+                    count = glucoseMeasurements.size,
                     points = points,
 
                     avgCaloriesPerDay = avgCaloriesPerDay,
