@@ -16,14 +16,6 @@
             android:hint="Название продукта :" />
 
         <EditText
-            android:id="@+id/caloriesInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Калорий на 100 г :"
-            android:inputType="numberDecimal" />
-
-
-        <EditText
             android:id="@+id/proteinInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +34,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Углеводы на 100 г :"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/caloriesInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Калории (опционально)"
             android:inputType="numberDecimal" />
 
     </LinearLayout>

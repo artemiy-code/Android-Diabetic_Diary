@@ -177,7 +177,6 @@ class FoodLogActivity : AppCompatActivity() {
             } else {
                 allProducts.asSequence()
                     .filter { it.name.lowercase().contains(q) }
-                    .take(100)
                     .toList()
             }
 

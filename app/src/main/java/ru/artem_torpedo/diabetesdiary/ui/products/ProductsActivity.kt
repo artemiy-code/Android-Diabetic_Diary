@@ -156,7 +156,8 @@ class ProductsActivity : AppCompatActivity() {
 
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val name = nameInput.text.toString().trim()
+                var name = nameInput.text.toString().trim()
+                name = name.first().uppercase() + name.substring(1)
                 if (name.length < 2) {
                     nameInput.error = "Минимум 2 символа"
                     nameInput.requestFocus()
@@ -164,13 +165,25 @@ class ProductsActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                val cal =
-                    parseRequiredFloat(caloriesInput, "Калории", 900f) ?: return@setOnClickListener
                 val carbs =
                     parseRequiredFloat(carbsInput, "Углеводы", 100f) ?: return@setOnClickListener
                 val prot =
                     parseRequiredFloat(proteinInput, "Белки", 40f) ?: return@setOnClickListener
                 val fatV = parseRequiredFloat(fatInput, "Жиры", 100f) ?: return@setOnClickListener
+
+                val calRaw = caloriesInput.text.toString().replace(',', '.').trim()
+                val cal = if (calRaw.isBlank()) {
+                    prot * 4f + fatV * 9f + carbs * 4f
+                } else {
+                    val v = calRaw.toFloatOrNull()
+                    if (v == null || v !in 0f..900f) {
+                        caloriesInput.error = "Диапазон 0–900"
+                        caloriesInput.requestFocus()
+                        Toast.makeText(this, "Значение вне диапазона: Калории", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    v
+                }
 
                 val entity = existing?.copy(
                     name = name,
