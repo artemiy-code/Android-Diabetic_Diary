@@ -173,7 +173,7 @@ class FoodLogActivity : AppCompatActivity() {
         fun rebuildList(query: String) {
             val q = query.trim().lowercase()
             filtered = if (q.isEmpty()) {
-                allProducts.take(50)
+                allProducts
             } else {
                 allProducts.asSequence()
                     .filter { it.name.lowercase().contains(q) }
