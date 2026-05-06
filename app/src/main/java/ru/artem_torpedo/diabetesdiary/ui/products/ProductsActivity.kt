@@ -3,6 +3,8 @@ package ru.artem_torpedo.diabetesdiary.ui.products
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -19,12 +21,17 @@ import ru.artem_torpedo.diabetesdiary.ui.foodlog.FoodLogActivity
 import ru.artem_torpedo.diabetesdiary.ui.measurement.MeasurementsActivity
 import ru.artem_torpedo.diabetesdiary.ui.reminders.RemindersActivity
 import ru.artem_torpedo.diabetesdiary.ui.statistics.StatisticsActivity
+import java.util.Locale
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 
 class ProductsActivity : AppCompatActivity() {
 
     private val viewModel: ProductsViewModel by viewModels()
 
-    private var productList: List<ProductEntity> = emptyList()
+    private var allProducts: List<ProductEntity> = emptyList()
+    private var filteredProducts: List<ProductEntity> = emptyList()
+
     private lateinit var adapter: ArrayAdapter<String>
     private val items = mutableListOf<String>()
 
@@ -37,29 +44,51 @@ class ProductsActivity : AppCompatActivity() {
 
         profileId = intent.getLongExtra(EXTRA_PROFILE_ID, -1)
         profileName = intent.getStringExtra(EXTRA_PROFILE_NAME).orEmpty()
+
         title = "Продукты: $profileName"
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val listView: ListView = findViewById(R.id.productsList)
         val addButton: Button = findViewById(R.id.addProductButton)
+        val searchInput: EditText = findViewById(R.id.searchInput)
 
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
-            val product = productList[position]
+            val product = filteredProducts[position]
             showAddOrEditDialog(existing = product)
         }
 
         listView.setOnItemLongClickListener { _, _, position, _ ->
-            val product = productList[position]
+            val product = filteredProducts[position]
             showDeleteDialog(product)
             true
         }
 
         addButton.setOnClickListener {
             showAddOrEditDialog(existing = null)
+        }
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterProducts(s.toString())
+            }
+        })
+
+        searchInput.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                searchInput.clearFocus()
+                true
+            } else {
+                false
+            }
         }
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottomNavigation)
@@ -92,23 +121,37 @@ class ProductsActivity : AppCompatActivity() {
         }
 
         viewModel.products.observe(this) { list ->
-            productList = list
-            items.clear()
-            items.addAll(list.map { p ->
-                "${p.name}\n" +
-                        "100 г: ${fmt1(p.caloriesPer100g)} ккал, " +
-                        "Б ${fmt1(p.proteinPer100g)}, " +
-                        "Ж ${fmt1(p.fatPer100g)}, " +
-                        "У ${fmt1(p.carbsPer100g)}"
-            })
-
-            adapter.notifyDataSetChanged()
+            allProducts = list.sortedBy { it.name.lowercase() }
+            filterProducts(searchInput.text.toString())
         }
-
         viewModel.load()
     }
 
+    private fun filterProducts(query: String) {
+        filteredProducts =
+            if (query.isBlank()) {
+                allProducts
+            } else {
+                allProducts.filter {
+                    it.name.contains(query.trim(), ignoreCase = true)
+                }
+            }
+
+        items.clear()
+
+        items.addAll(filteredProducts.map { p ->
+            "${p.name}\n" +
+                    "100 г: ${fmt1(p.caloriesPer100g)} ккал, " +
+                    "Б ${fmt1(p.proteinPer100g)}, " +
+                    "Ж ${fmt1(p.fatPer100g)}, " +
+                    "У ${fmt1(p.carbsPer100g)}"
+        })
+
+        adapter.notifyDataSetChanged()
+    }
+
     private fun showAddOrEditDialog(existing: ProductEntity?) {
+
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_product, null)
 
         val nameInput = dialogView.findViewById<EditText>(R.id.nameInput)
@@ -125,7 +168,9 @@ class ProductsActivity : AppCompatActivity() {
             fatInput.setText(existing.fatPer100g.toString())
         }
 
-        val titleText = if (existing == null) "Новый продукт" else "Редактировать продукт"
+        val titleText =
+            if (existing == null) "Новый продукт"
+            else "Редактировать продукт"
 
         val dialog = AlertDialog.Builder(this)
             .setTitle(titleText)
@@ -134,21 +179,33 @@ class ProductsActivity : AppCompatActivity() {
             .setNegativeButton("Отмена", null)
             .create()
 
-        fun parseRequiredFloat(input: EditText, fieldLabel: String, max: Float): Float? {
+        fun parseRequiredFloat(
+            input: EditText,
+            fieldLabel: String,
+            max: Float,
+        ): Float? {
+
             val raw = input.text.toString().replace(',', '.').trim()
             val v = raw.toFloatOrNull()
             if (v == null) {
                 input.error = "Введите число"
                 input.requestFocus()
-                Toast.makeText(this, "Некорректное значение: $fieldLabel", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    this,
+                    "Некорректное значение: $fieldLabel",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return null
             }
+
             if (v !in 0f..max) {
                 input.error = "Диапазон 0–${max.toInt()}"
                 input.requestFocus()
-                Toast.makeText(this, "Значение вне диапазона: $fieldLabel", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    this,
+                    "Значение вне диапазона: $fieldLabel",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return null
             }
             return v
@@ -157,54 +214,79 @@ class ProductsActivity : AppCompatActivity() {
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 var name = nameInput.text.toString().trim()
-                name = name.first().uppercase() + name.substring(1)
+                if (name.isNotBlank()) {
+                    name = name.first().uppercase() + name.substring(1)
+                }
                 if (name.length < 2) {
                     nameInput.error = "Минимум 2 символа"
                     nameInput.requestFocus()
-                    Toast.makeText(this, "Введите корректное название", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Введите корректное название",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
 
                 val carbs =
-                    parseRequiredFloat(carbsInput, "Углеводы", 100f) ?: return@setOnClickListener
+                    parseRequiredFloat(carbsInput, "Углеводы", 100f)
+                        ?: return@setOnClickListener
+
                 val prot =
-                    parseRequiredFloat(proteinInput, "Белки", 40f) ?: return@setOnClickListener
-                val fatV = parseRequiredFloat(fatInput, "Жиры", 100f) ?: return@setOnClickListener
+                    parseRequiredFloat(proteinInput, "Белки", 40f)
+                        ?: return@setOnClickListener
 
-                val calRaw = caloriesInput.text.toString().replace(',', '.').trim()
-                val cal = if (calRaw.isBlank()) {
-                    prot * 4f + fatV * 9f + carbs * 4f
-                } else {
-                    val v = calRaw.toFloatOrNull()
-                    if (v == null || v !in 0f..900f) {
-                        caloriesInput.error = "Диапазон 0–900"
-                        caloriesInput.requestFocus()
-                        Toast.makeText(this, "Значение вне диапазона: Калории", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
+                val fatV =
+                    parseRequiredFloat(fatInput, "Жиры", 100f)
+                        ?: return@setOnClickListener
+
+                val calRaw =
+                    caloriesInput.text.toString()
+                        .replace(',', '.')
+                        .trim()
+
+                val cal =
+                    if (calRaw.isBlank()) {
+                        prot * 4f + fatV * 9f + carbs * 4f
+                    } else {
+                        val v = calRaw.toFloatOrNull()
+                        if (v == null || v !in 0f..900f) {
+                            caloriesInput.error = "Диапазон 0–900"
+                            caloriesInput.requestFocus()
+                            Toast.makeText(
+                                this,
+                                "Значение вне диапазона: Калории",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@setOnClickListener
+                        }
+                        v
                     }
-                    v
-                }
 
-                val entity = existing?.copy(
-                    name = name,
-                    caloriesPer100g = cal,
-                    carbsPer100g = carbs,
-                    proteinPer100g = prot,
-                    fatPer100g = fatV
-                )
-                    ?: ProductEntity(
+                val entity =
+                    existing?.copy(
                         name = name,
                         caloriesPer100g = cal,
                         carbsPer100g = carbs,
                         proteinPer100g = prot,
                         fatPer100g = fatV
                     )
+                        ?: ProductEntity(
+                            name = name,
+                            caloriesPer100g = cal,
+                            carbsPer100g = carbs,
+                            proteinPer100g = prot,
+                            fatPer100g = fatV
+                        )
 
-                if (existing == null) viewModel.add(entity) else viewModel.update(entity)
+                if (existing == null) {
+                    viewModel.add(entity)
+                } else {
+                    viewModel.update(entity)
+                }
                 dialog.dismiss()
             }
         }
-
         dialog.show()
     }
 
@@ -212,18 +294,27 @@ class ProductsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Удалить продукт?")
             .setMessage("Это действие нельзя отменить.")
-            .setPositiveButton("Удалить") { _, _ -> viewModel.delete(product) }
+            .setPositiveButton("Удалить") { _, _ ->
+                viewModel.delete(product)
+            }
             .setNegativeButton("Отмена", null)
             .show()
     }
 
-    private fun fmt1(v: Float): String = String.format(java.util.Locale.getDefault(), "%.1f", v)
+    private fun fmt1(v: Float): String {
+        return String.format(Locale.getDefault(), "%.1f", v)
+    }
 
     companion object {
         private const val EXTRA_PROFILE_ID = "profile_id"
         private const val EXTRA_PROFILE_NAME = "profile_name"
 
-        fun start(context: Context, profileId: Long, profileName: String) {
+        fun start(
+            context: Context,
+            profileId: Long,
+            profileName: String,
+        ) {
+
             val intent = Intent(context, ProductsActivity::class.java)
             intent.putExtra(EXTRA_PROFILE_ID, profileId)
             intent.putExtra(EXTRA_PROFILE_NAME, profileName)
@@ -243,5 +334,4 @@ class ProductsActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
 }
