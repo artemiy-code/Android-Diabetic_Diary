@@ -28,7 +28,7 @@ class MeasurementViewModel(application: Application) :
         glucose: Float?,
         insulin: Float?,
         breadUnits: Float?,
-        comment: String?
+        comment: String?,
     ) {
         viewModelScope.launch {
             repository.addMeasurement(
@@ -56,7 +56,7 @@ class MeasurementViewModel(application: Application) :
     fun loadMeasurementsByDate(
         profileId: Long,
         fromDate: Long,
-        toDate: Long
+        toDate: Long,
     ) {
         viewModelScope.launch {
             measurements.postValue(
@@ -69,4 +69,14 @@ class MeasurementViewModel(application: Application) :
         }
     }
 
+    fun updateMeasurement(
+        profileId: Long,
+        measurement: MeasurementEntity,
+    ) {
+        viewModelScope.launch {
+            repository.update(measurement)
+
+            loadMeasurements(profileId)
+        }
+    }
 }

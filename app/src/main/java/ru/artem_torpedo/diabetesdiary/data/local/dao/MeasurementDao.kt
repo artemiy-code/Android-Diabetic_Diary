@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Update
 import ru.artem_torpedo.diabetesdiary.data.local.entity.MeasurementEntity
 
 @Dao
@@ -11,6 +12,9 @@ interface MeasurementDao {
 
     @Insert
     suspend fun insert(measurement: MeasurementEntity)
+
+    @Update
+    suspend fun update(measurement: MeasurementEntity)
 
     @Delete
     suspend fun delete(measurement: MeasurementEntity)

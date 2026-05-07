@@ -17,6 +17,10 @@ class MeasurementRepository(context: Context) {
         measurementDao.insert(measurement)
     }
 
+    suspend fun update(measurement: MeasurementEntity) {
+        measurementDao.update(measurement)
+    }
+
     suspend fun deleteMeasurement(measurement: MeasurementEntity) {
         measurementDao.delete(measurement)
     }

@@ -104,6 +104,11 @@ class MeasurementsActivity : AppCompatActivity() {
         )
         listView.adapter = adapter
 
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val measurement = measurementList[position]
+            showAddOrEditDialog(profileId, measurement)
+        }
+
         listView.setOnItemLongClickListener { _, _, position, _ ->
             val measurement = measurementList[position]
             showDeleteDialog(profileId, measurement)
@@ -143,11 +148,14 @@ class MeasurementsActivity : AppCompatActivity() {
         viewModel.loadMeasurements(profileId)
 
         addButton.setOnClickListener {
-            showAddDialog(profileId)
+            showAddOrEditDialog(profileId, null)
         }
     }
 
-    private fun showAddDialog(profileId: Long) {
+    private fun showAddOrEditDialog(
+        profileId: Long,
+        existing: MeasurementEntity?
+    ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_measurement, null)
 
         val glucoseInput = dialogView.findViewById<android.widget.EditText>(R.id.glucoseInput)
@@ -155,8 +163,20 @@ class MeasurementsActivity : AppCompatActivity() {
         val breadInput = dialogView.findViewById<android.widget.EditText>(R.id.breadUnitsInput)
         val commentInput = dialogView.findViewById<android.widget.EditText>(R.id.commentInput)
 
+        existing?.let {
+            glucoseInput.setText(it.glucoseLevel?.toString().orEmpty())
+            insulinInput.setText(it.insulinUnits?.toString().orEmpty())
+            breadInput.setText(it.breadUnits?.toString().orEmpty())
+            commentInput.setText(it.comment.orEmpty())
+        }
+
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Новая запись")
+            .setTitle(
+                if (existing == null)
+                    "Новая запись"
+                else
+                    "Редактировать запись"
+            )
             .setView(dialogView)
             .setPositiveButton("Сохранить", null)
             .setNegativeButton("Отмена", null)
@@ -179,7 +199,6 @@ class MeasurementsActivity : AppCompatActivity() {
                         v
                     }
                 }
-
 
                 val insulin = run {
                     val raw = insulinInput.text.toString().replace(',', '.').trim()
@@ -217,19 +236,32 @@ class MeasurementsActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-
                 if (insulin != null && breadUnits != null && insulin / breadUnits > 4) {
                     Toast.makeText(this, "Нельзя вводить столько инсулина!", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
-                viewModel.addMeasurement(
-                    profileId = profileId,
-                    glucose = glucose,
-                    insulin = insulin,
-                    breadUnits = breadUnits,
-                    comment = comment
-                )
+                if (existing == null) {
+
+                    viewModel.addMeasurement(
+                        profileId = profileId,
+                        glucose = glucose,
+                        insulin = insulin,
+                        breadUnits = breadUnits,
+                        comment = comment
+                    )
+
+                } else {
+
+                    val updated = existing.copy(
+                        glucoseLevel = glucose,
+                        insulinUnits = insulin,
+                        breadUnits = breadUnits,
+                        comment = comment
+                    )
+
+                    viewModel.updateMeasurement(profileId, updated)
+                }
 
                 dialog.dismiss()
             }
@@ -237,6 +269,8 @@ class MeasurementsActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
+
 
 
     private fun formatDate(timeMillis: Long): String {
