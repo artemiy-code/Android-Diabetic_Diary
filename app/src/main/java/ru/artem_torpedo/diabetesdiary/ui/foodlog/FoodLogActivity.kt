@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import ru.artem_torpedo.diabetesdiary.R
+import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryEntity
 import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryWithProduct
 import ru.artem_torpedo.diabetesdiary.ui.MainActivity
 import ru.artem_torpedo.diabetesdiary.ui.measurement.MeasurementsActivity
@@ -65,6 +66,11 @@ class FoodLogActivity : AppCompatActivity() {
 
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
+
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val entry = foodList[position]
+            showEditFoodDialog(entry)
+        }
 
         listView.setOnItemLongClickListener { _, _, position, _ ->
             val entry = foodList[position]
@@ -398,24 +404,34 @@ class FoodLogActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showGramsDialog(productId: Long, productName: String) {
+    private fun showEditFoodDialog(entry: FoodEntryWithProduct) {
+
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_food_grams, null)
+
         val selectedText = dialogView.findViewById<TextView>(R.id.selectedProductText)
         val gramsInput = dialogView.findViewById<EditText>(R.id.gramsInput)
         val commentInput = dialogView.findViewById<EditText>(R.id.commentInput)
 
-        selectedText.text = "Продукт: $productName"
+        selectedText.text = "Продукт: ${entry.productName}"
+
+        gramsInput.setText(fmt1(entry.grams))
+        commentInput.setText(entry.comment.orEmpty())
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Добавить прием пищи")
+            .setTitle("Редактировать прием пищи")
             .setView(dialogView)
             .setPositiveButton("Сохранить", null)
             .setNegativeButton("Отмена", null)
             .create()
 
         dialog.setOnShowListener {
+
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val raw = gramsInput.text.toString().replace(',', '.').trim()
+
+                val raw = gramsInput.text.toString()
+                    .replace(',', '.')
+                    .trim()
+
                 val grams = raw.toFloatOrNull()
 
                 if (grams == null) {
@@ -423,21 +439,34 @@ class FoodLogActivity : AppCompatActivity() {
                     gramsInput.requestFocus()
                     return@setOnClickListener
                 }
+
                 if (grams > 2500f) {
                     gramsInput.error = "Слишком большое значение"
                     gramsInput.requestFocus()
                     return@setOnClickListener
                 }
 
-                val comment = commentInput.text.toString().trim().takeIf { it.isNotBlank() }
-                viewModel.addEntry(profileId, productId, grams, comment)
+                val comment = commentInput.text.toString()
+                    .trim()
+                    .takeIf { it.isNotBlank() }
+
+                viewModel.updateEntry(profileId,
+                    FoodEntryEntity(
+                        entry.entryId,
+                        entry.profileId,
+                        entry.productId,
+                        grams,
+                        entry.dateTime,
+                        comment
+                    )
+                )
+
+
                 dialog.dismiss()
             }
         }
-
         dialog.show()
     }
-
 
     private fun showFilterDialog() {
         val picker = MaterialDatePicker.Builder.dateRangePicker()

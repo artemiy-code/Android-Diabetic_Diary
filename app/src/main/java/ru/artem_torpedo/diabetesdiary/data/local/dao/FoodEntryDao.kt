@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryEntity
 import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryWithProduct
 
@@ -61,6 +62,9 @@ interface FoodEntryDao {
 
     @Insert
     suspend fun insert(entry: FoodEntryEntity)
+
+    @Update
+    suspend fun update(entry: FoodEntryEntity)
 
     @Delete
     suspend fun delete(entry: FoodEntryEntity)

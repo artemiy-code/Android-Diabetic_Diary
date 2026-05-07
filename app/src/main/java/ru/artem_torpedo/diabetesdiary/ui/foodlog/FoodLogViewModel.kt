@@ -51,11 +51,20 @@ class FoodLogViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun updateEntry(
+        profileId: Long,
+        foodLog : FoodEntryEntity
+    ) {
+        viewModelScope.launch {
+            foodRepo.updateEntry(foodLog)
+            loadFoodLog(profileId)
+        }
+    }
+
     fun deleteEntry(profileId: Long, entryId: Long) {
         viewModelScope.launch {
             foodRepo.deleteById(entryId)
             foodLog.postValue(foodRepo.getFoodLog(profileId))
         }
     }
-
 }

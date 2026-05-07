@@ -18,4 +18,11 @@ class FoodEntryRepository(context: Context) {
     suspend fun insert(entry: FoodEntryEntity) = dao.insert(entry)
     suspend fun delete(entry: FoodEntryEntity) = dao.delete(entry)
     suspend fun deleteById(entryId: Long) = dao.deleteById(entryId)
+
+
+    suspend fun updateEntry(
+        foodLog : FoodEntryEntity
+    ) {
+        dao.update(foodLog)
+    }
 }
