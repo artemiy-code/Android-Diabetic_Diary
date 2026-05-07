@@ -141,19 +141,207 @@ class FoodLogActivity : AppCompatActivity() {
     }
 
     private fun showAddFoodDialog() {
+
         val allProducts = viewModel.products.value.orEmpty()
+
         if (allProducts.isEmpty()) {
             AlertDialog.Builder(this)
                 .setTitle("Нет продуктов")
-                .setMessage("Сначала добавь продукты в базе.")
+                .setMessage("Сначала добавьте продукты.")
                 .setPositiveButton("Ок", null)
                 .show()
             return
         }
 
-        showProductPickerDialog(allProducts) { selectedProduct ->
-            showGramsDialog(selectedProduct.id, selectedProduct.name)
+        val draftItems = mutableListOf<FoodDraftItem>()
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_food_meal, null)
+
+        val mealList = dialogView.findViewById<ListView>(R.id.mealProductsList)
+        val addProductButton = dialogView.findViewById<Button>(R.id.addMealProductButton)
+
+        val totalText = dialogView.findViewById<TextView>(R.id.totalMealText)
+
+        val mealDisplay = mutableListOf<String>()
+
+        val mealAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            mealDisplay
+        )
+
+        mealList.adapter = mealAdapter
+
+        fun rebuildMealList() {
+
+            mealDisplay.clear()
+
+            mealDisplay.addAll(
+                draftItems.map { item ->
+
+                    val kcal = item.caloriesPer100g * item.grams / 100f
+                    val prot = item.proteinPer100g * item.grams / 100f
+                    val fat = item.fatPer100g * item.grams / 100f
+                    val carbs = item.carbsPer100g * item.grams / 100f
+
+                    buildString {
+                        append("${item.productName} (${fmt1(item.grams)} г)")
+                        append("\n")
+                        append(
+                            "Ккал ${fmt1(kcal)} | " +
+                                    "Б ${fmt1(prot)} | " +
+                                    "Ж ${fmt1(fat)} | " +
+                                    "У ${fmt1(carbs)}"
+                        )
+
+                        item.comment?.let {
+                            append("\nКомментарий: $it")
+                        }
+                    }
+                }
+            )
+
+            mealAdapter.notifyDataSetChanged()
+
+            val totalCalories = draftItems.sumOf {
+                (it.caloriesPer100g * it.grams / 100f).toDouble()
+            }.toFloat()
+
+            val totalProtein = draftItems.sumOf {
+                (it.proteinPer100g * it.grams / 100f).toDouble()
+            }.toFloat()
+
+            val totalFat = draftItems.sumOf {
+                (it.fatPer100g * it.grams / 100f).toDouble()
+            }.toFloat()
+
+            val totalCarbs = draftItems.sumOf {
+                (it.carbsPer100g * it.grams / 100f).toDouble()
+            }.toFloat()
+
+            totalText.text =
+                "Итого:\n" +
+                        "Ккал ${fmt1(totalCalories)} | " +
+                        "Б ${fmt1(totalProtein)} | " +
+                        "Ж ${fmt1(totalFat)} | " +
+                        "У ${fmt1(totalCarbs)}"
         }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Новый прием пищи")
+            .setView(dialogView)
+            .setPositiveButton("Сохранить", null)
+            .setNegativeButton("Отмена", null)
+            .create()
+
+        addProductButton.setOnClickListener {
+
+            showProductPickerDialog(allProducts) { selectedProduct ->
+
+                val gramsView =
+                    layoutInflater.inflate(R.layout.dialog_add_food_grams, null)
+
+                val selectedText =
+                    gramsView.findViewById<TextView>(R.id.selectedProductText)
+
+                val gramsInput =
+                    gramsView.findViewById<EditText>(R.id.gramsInput)
+
+                val commentInput =
+                    gramsView.findViewById<EditText>(R.id.commentInput)
+
+                selectedText.text = "Продукт: ${selectedProduct.name}"
+
+                AlertDialog.Builder(this)
+                    .setTitle("Добавить продукт")
+                    .setView(gramsView)
+                    .setPositiveButton("Добавить", null)
+                    .setNegativeButton("Отмена", null)
+                    .create()
+                    .also { addDialog ->
+
+                        addDialog.setOnShowListener {
+
+                            addDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                                .setOnClickListener {
+
+                                    val raw = gramsInput.text.toString()
+                                        .replace(',', '.')
+                                        .trim()
+
+                                    val grams = raw.toFloatOrNull()
+
+                                    if (grams == null || grams <= 0f) {
+                                        gramsInput.error = "Введите граммы"
+                                        return@setOnClickListener
+                                    }
+
+                                    if (grams > 2500f) {
+                                        gramsInput.error =
+                                            "Слишком большое значение"
+                                        return@setOnClickListener
+                                    }
+
+                                    draftItems.add(
+                                        FoodDraftItem(
+                                            productId = selectedProduct.id,
+                                            productName = selectedProduct.name,
+
+                                            caloriesPer100g = selectedProduct.caloriesPer100g,
+                                            proteinPer100g = selectedProduct.proteinPer100g,
+                                            fatPer100g = selectedProduct.fatPer100g,
+                                            carbsPer100g = selectedProduct.carbsPer100g,
+
+                                            grams = grams,
+                                            comment = commentInput.text.toString()
+                                                .trim()
+                                                .takeIf { it.isNotBlank() }
+                                        )
+                                    )
+                                    rebuildMealList()
+                                    addDialog.dismiss()
+                                }
+                        }
+                        addDialog.show()
+                    }
+            }
+        }
+
+        mealList.setOnItemLongClickListener { _, _, position, _ ->
+            draftItems.removeAt(position)
+            rebuildMealList()
+            true
+        }
+
+        dialog.setOnShowListener {
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener {
+
+                    if (draftItems.isEmpty()) {
+                        Toast.makeText(
+                            this,
+                            "Добавьте хотя бы один продукт",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        return@setOnClickListener
+                    }
+
+                    draftItems.forEach { item ->
+
+                        viewModel.addEntry(
+                            profileId = profileId,
+                            productId = item.productId,
+                            grams = item.grams,
+                            comment = item.comment
+                        )
+                    }
+                    dialog.dismiss()
+                }
+        }
+        rebuildMealList()
+        dialog.show()
     }
 
     private fun showProductPickerDialog(
@@ -164,7 +352,6 @@ class FoodLogActivity : AppCompatActivity() {
         val searchInput = dialogView.findViewById<EditText>(R.id.searchInput)
         val listView = dialogView.findViewById<ListView>(R.id.productsList)
 
-        // Стартовый список сделал первые 50. Уменьшить, если будет лагать
         var filtered = allProducts
         val display = mutableListOf<String>()
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, display)
