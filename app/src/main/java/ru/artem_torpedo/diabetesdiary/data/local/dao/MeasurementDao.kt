@@ -3,6 +3,7 @@ package ru.artem_torpedo.diabetesdiary.data.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Delete
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import ru.artem_torpedo.diabetesdiary.data.local.entity.MeasurementEntity
@@ -35,5 +36,14 @@ interface MeasurementDao {
         fromDate: Long,
         toDate: Long
     ): List<MeasurementEntity>
+
+    @Query("SELECT * FROM measurements")
+    suspend fun getAllDirect(): List<MeasurementEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(measurements: List<MeasurementEntity>)
+
+    @Query("DELETE FROM measurements")
+    suspend fun deleteAll()
 
 }

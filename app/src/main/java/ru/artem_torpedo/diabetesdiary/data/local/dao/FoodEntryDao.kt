@@ -3,6 +3,7 @@ package ru.artem_torpedo.diabetesdiary.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryEntity
@@ -71,5 +72,14 @@ interface FoodEntryDao {
 
     @Query("DELETE FROM food_entries WHERE id = :entryId")
     suspend fun deleteById(entryId: Long)
+
+    @Query("SELECT * FROM food_entries")
+    suspend fun getAllDirect(): List<FoodEntryEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entries: List<FoodEntryEntity>)
+
+    @Query("DELETE FROM food_entries")
+    suspend fun deleteAll()
 
 }

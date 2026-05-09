@@ -18,10 +18,79 @@ import kotlinx.coroutines.launch
 import ru.artem_torpedo.diabetesdiary.data.local.entity.ProfileEntity
 import ru.artem_torpedo.diabetesdiary.data.local.seed.ProductSeeder
 import ru.artem_torpedo.diabetesdiary.ui.measurement.MeasurementsActivity
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ru.artem_torpedo.diabetesdiary.data.backup.BackupManager
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: ProfileViewModel by viewModels()
+
+    private val exportLauncher =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+
+            if (uri == null) return@registerForActivityResult
+
+            lifecycleScope.launch {
+
+                try {
+
+                    contentResolver.openOutputStream(uri)?.use { stream ->
+
+                        BackupManager(this@MainActivity)
+                            .exportToStream(stream)
+                    }
+
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Данные экспортированы",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Ошибка экспорта",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+    private val importLauncher =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+
+            if (uri == null) return@registerForActivityResult
+
+            lifecycleScope.launch {
+
+                try {
+
+                    contentResolver.openInputStream(uri)?.use { stream ->
+
+                        BackupManager(this@MainActivity)
+                            .importFromStream(stream)
+                    }
+
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Данные импортированы",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    viewModel.loadProfiles()
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Ошибка импорта",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
 
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
@@ -38,6 +107,8 @@ class MainActivity : AppCompatActivity() {
 
         listView = findViewById(R.id.profileListView)
         val addButton: Button = findViewById(R.id.addProfileButton)
+
+        val backupFab: FloatingActionButton = findViewById(R.id.backupFab)
 
         adapter = ArrayAdapter(
             this,
@@ -59,16 +130,57 @@ class MainActivity : AppCompatActivity() {
             showAddProfileDialog()
         }
 
+        backupFab.setOnClickListener {
+
+            AlertDialog.Builder(this)
+                .setTitle("Резервное копирование")
+                .setItems(
+                    arrayOf(
+                        "Экспорт данных",
+                        "Импорт данных"
+                    )
+                ) { _, which ->
+
+                    when (which) {
+
+                        0 -> {
+                            exportLauncher.launch(
+                                "diabetes_backup.json"
+                            )
+                        }
+
+                        1 -> {
+
+                            AlertDialog.Builder(this)
+                                .setTitle("Импорт данных")
+                                .setMessage(
+                                    "Все текущие данные будут заменены. Продолжить?"
+                                )
+                                .setPositiveButton("Импорт") { _, _ ->
+
+                                    importLauncher.launch(
+                                        arrayOf("application/json")
+                                    )
+                                }
+                                .setNegativeButton("Отмена", null)
+                                .show()
+                        }
+                    }
+                }
+                .show()
+        }
+
         listView.setOnItemClickListener { _, _, position, _ ->
             val profile = viewModel.profiles.value?.get(position)
             profile?.let {
                 MeasurementsActivity.start(this, it.id, it.name)
             }
-            listView.setOnItemLongClickListener { _, _, position, _ ->
-                val profile = viewModel.profiles.value?.get(position)
-                showDeleteProfileDialog(profile!!)
-                true
-            }
+        }
+
+        listView.setOnItemLongClickListener { _, _, position, _ ->
+            val profile = viewModel.profiles.value?.get(position)
+            showDeleteProfileDialog(profile!!)
+            true
         }
 
     }
