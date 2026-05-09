@@ -13,7 +13,7 @@ import java.util.Locale
 class GlucoseMarkerView(
     context: Context,
     layoutResource: Int,
-    private val points: List<ChartPoint>
+    private val points: List<ChartPoint>,
 ) : MarkerView(context, layoutResource) {
 
     private val dateText: TextView = findViewById(R.id.markerDateText)
@@ -27,14 +27,15 @@ class GlucoseMarkerView(
             if (index in points.indices) {
                 val point = points[index]
                 dateText.text = formatter.format(Date(point.timeMillis))
-                valueText.text = "Сахар: ${String.format(Locale.getDefault(), "%.1f", point.glucose)}"
+                valueText.text =
+                    "Сахар: ${String.format(Locale.getDefault(), "%.1f", point.glucose)}"
             }
         }
         super.refreshContent(e, highlight)
     }
 
     override fun getOffset() = com.github.mikephil.charting.utils.MPPointF(
-        -(width / 2f),
-        -height.toFloat()
+        -(width / 1f),
+        y
     )
 }
