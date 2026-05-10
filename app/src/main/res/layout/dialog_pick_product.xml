@@ -9,7 +9,8 @@
         android:id="@+id/searchInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Поиск продукта"
+        android:autofillHints="name"
+        android:hint="@string/search_product"
         android:imeOptions="actionDone"
         android:inputType="text" />
 

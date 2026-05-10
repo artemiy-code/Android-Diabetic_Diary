@@ -139,7 +139,7 @@ class FoodLogActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             val total = list.sumOf { (it.grams * it.caloriesPer100g / 100f).toDouble() }.toFloat()
-            totalCaloriesText.text = "Калории за период: ${fmt1(total)}"
+            totalCaloriesText.text = getString(R.string.calories_per_period, fmt1(total))
         }
 
         viewModel.loadProducts()
@@ -225,12 +225,13 @@ class FoodLogActivity : AppCompatActivity() {
                 (it.carbsPer100g * it.grams / 100f).toDouble()
             }.toFloat()
 
-            totalText.text =
-                "Итого:\n" +
-                        "Ккал ${fmt1(totalCalories)} | " +
-                        "Б ${fmt1(totalProtein)} | " +
-                        "Ж ${fmt1(totalFat)} | " +
-                        "У ${fmt1(totalCarbs)}"
+            totalText.text = getString(
+                R.string.total_meal,
+                fmt1(totalCalories),
+                fmt1(totalProtein),
+                fmt1(totalFat),
+                fmt1(totalCarbs)
+            )
         }
 
         val dialog = AlertDialog.Builder(this)
@@ -256,7 +257,7 @@ class FoodLogActivity : AppCompatActivity() {
                 val commentInput =
                     gramsView.findViewById<EditText>(R.id.commentInput)
 
-                selectedText.text = "Продукт: ${selectedProduct.name}"
+                selectedText.text = getString(R.string.product, selectedProduct.name)
 
                 AlertDialog.Builder(this)
                     .setTitle("Добавить продукт")
@@ -352,7 +353,7 @@ class FoodLogActivity : AppCompatActivity() {
 
     private fun showProductPickerDialog(
         allProducts: List<ru.artem_torpedo.diabetesdiary.data.local.entity.ProductEntity>,
-        onPicked: (ru.artem_torpedo.diabetesdiary.data.local.entity.ProductEntity) -> Unit
+        onPicked: (ru.artem_torpedo.diabetesdiary.data.local.entity.ProductEntity) -> Unit,
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_pick_product, null)
         val searchInput = dialogView.findViewById<EditText>(R.id.searchInput)
@@ -412,7 +413,7 @@ class FoodLogActivity : AppCompatActivity() {
         val gramsInput = dialogView.findViewById<EditText>(R.id.gramsInput)
         val commentInput = dialogView.findViewById<EditText>(R.id.commentInput)
 
-        selectedText.text = "Продукт: ${entry.productName}"
+        selectedText.text = getString(R.string.product, entry.productName)
 
         gramsInput.setText(fmt1(entry.grams))
         commentInput.setText(entry.comment.orEmpty())
@@ -450,7 +451,8 @@ class FoodLogActivity : AppCompatActivity() {
                     .trim()
                     .takeIf { it.isNotBlank() }
 
-                viewModel.updateEntry(profileId,
+                viewModel.updateEntry(
+                    profileId,
                     FoodEntryEntity(
                         entry.entryId,
                         entry.profileId,
@@ -489,7 +491,7 @@ class FoodLogActivity : AppCompatActivity() {
             viewModel.loadFoodLogByDate(profileId, fromDateMillis!!, toDateMillis!!)
         }
 
-        picker.show(supportFragmentManager, "foodlog_date_range_picker")
+        picker.show(supportFragmentManager, "foodLog_date_range_picker")
     }
 
     private fun clearDateFilter() {

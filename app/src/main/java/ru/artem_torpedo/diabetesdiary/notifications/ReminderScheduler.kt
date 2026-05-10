@@ -39,7 +39,7 @@ object ReminderScheduler {
                         pendingIntent
                     )
                 } else {
-                    // Фолбэк: если точные напоминания недоступны, ставим неточное
+                    // Fallback: если точные напоминания недоступны, ставим неточное
                     alarmManager.setAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         triggerAt,

@@ -12,7 +12,11 @@ class FoodEntryRepository(context: Context) {
     suspend fun getFoodLog(profileId: Long): List<FoodEntryWithProduct> =
         dao.getFoodLog(profileId)
 
-    suspend fun getFoodLogByDateRange(profileId: Long, from: Long, to: Long): List<FoodEntryWithProduct> =
+    suspend fun getFoodLogByDateRange(
+        profileId: Long,
+        from: Long,
+        to: Long,
+    ): List<FoodEntryWithProduct> =
         dao.getFoodLogByDateRange(profileId, from, to)
 
     suspend fun insert(entry: FoodEntryEntity) = dao.insert(entry)
@@ -21,7 +25,7 @@ class FoodEntryRepository(context: Context) {
 
 
     suspend fun updateEntry(
-        foodLog : FoodEntryEntity
+        foodLog: FoodEntryEntity,
     ) {
         dao.update(foodLog)
     }

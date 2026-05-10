@@ -34,7 +34,7 @@ interface MeasurementDao {
     suspend fun getMeasurementsByDateRange(
         profileId: Long,
         fromDate: Long,
-        toDate: Long
+        toDate: Long,
     ): List<MeasurementEntity>
 
     @Query("SELECT * FROM measurements")

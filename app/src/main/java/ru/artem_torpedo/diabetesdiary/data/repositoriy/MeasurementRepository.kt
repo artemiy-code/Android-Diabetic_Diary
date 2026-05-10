@@ -29,7 +29,7 @@ class MeasurementRepository(context: Context) {
     suspend fun getMeasurementsByDateRange(
         profileId: Long,
         fromDate: Long,
-        toDate: Long
+        toDate: Long,
     ): List<MeasurementEntity> {
         return measurementDao.getMeasurementsByDateRange(
             profileId,

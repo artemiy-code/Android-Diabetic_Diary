@@ -12,5 +12,5 @@ data class MeasurementEntity(
     val insulinUnits: Float? = null,
     val breadUnits: Float? = null,
     val dateTime: Long,
-    val comment: String? = null
+    val comment: String? = null,
 )

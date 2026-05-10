@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,15 +14,16 @@
             android:id="@+id/selectedProductText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Продукт: —"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="Продукт: —" />
 
         <EditText
             android:id="@+id/gramsInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="Граммы"
+            android:autofillHints="number"
+            android:hint="@string/grams"
             android:inputType="numberDecimal" />
 
         <EditText
@@ -29,7 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="Комментарий" />
+            android:autofillHints="name"
+            android:hint="@string/comment"
+            android:inputType="text" />
 
     </LinearLayout>
 </ScrollView>

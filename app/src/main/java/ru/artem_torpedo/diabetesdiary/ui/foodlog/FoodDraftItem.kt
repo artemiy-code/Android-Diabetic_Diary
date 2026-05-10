@@ -10,5 +10,5 @@ data class FoodDraftItem(
     val carbsPer100g: Float,
 
     var grams: Float,
-    var comment: String?
+    var comment: String?,
 )

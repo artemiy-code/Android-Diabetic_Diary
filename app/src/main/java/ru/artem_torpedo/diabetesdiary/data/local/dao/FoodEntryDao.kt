@@ -12,7 +12,8 @@ import ru.artem_torpedo.diabetesdiary.data.local.entity.FoodEntryWithProduct
 @Dao
 interface FoodEntryDao {
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             fe.id as entryId,
             fe.profileId as profileId,
@@ -30,10 +31,12 @@ interface FoodEntryDao {
         INNER JOIN products p ON p.id = fe.productId
         WHERE fe.profileId = :profileId
         ORDER BY fe.dateTime DESC
-    """)
+    """
+    )
     suspend fun getFoodLog(profileId: Long): List<FoodEntryWithProduct>
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             fe.id as entryId,
             fe.profileId as profileId,
@@ -52,13 +55,14 @@ interface FoodEntryDao {
         WHERE fe.profileId = :profileId
           AND fe.dateTime BETWEEN :fromDate AND :toDate
         ORDER BY fe.dateTime DESC
-    """)
+    """
+    )
 
 
     suspend fun getFoodLogByDateRange(
         profileId: Long,
         fromDate: Long,
-        toDate: Long
+        toDate: Long,
     ): List<FoodEntryWithProduct>
 
     @Insert

@@ -97,15 +97,19 @@ class RemindersActivity : AppCompatActivity() {
                 R.id.nav_measurements -> {
                     MeasurementsActivity.start(this, profileId, profileName); true
                 }
+
                 R.id.nav_statistics -> {
                     StatisticsActivity.start(this, profileId, profileName); true
                 }
+
                 R.id.nav_products -> {
                     ProductsActivity.start(this, profileId, profileName); true
                 }
+
                 R.id.nav_food_log -> {
                     FoodLogActivity.start(this, profileId, profileName); true
                 }
+
                 R.id.nav_reminders -> true
                 else -> false
             }
@@ -158,8 +162,8 @@ class RemindersActivity : AppCompatActivity() {
         }
 
         fun updateDateTimeText() {
-            dateButton.text = "Дата: ${dateFormatter.format(calendar.time)}"
-            timeButton.text = "Время: ${timeFormatter.format(calendar.time)}"
+            dateButton.text = getString(R.string.date, dateFormatter.format(calendar.time))
+            timeButton.text = getString(R.string.time, timeFormatter.format(calendar.time))
         }
 
         updateDateTimeText()

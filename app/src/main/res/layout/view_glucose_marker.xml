@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="8dp"
     android:background="@android:drawable/dialog_holo_light_frame">
@@ -10,14 +11,14 @@
         android:id="@+id/markerDateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Дата"
+        tools:text="@string/date_simple"
         android:textSize="12sp" />
 
     <TextView
         android:id="@+id/markerValueText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Сахар"
+        tools:text="@string/sugar_simple"
         android:textStyle="bold"
         android:textSize="13sp" />
 </LinearLayout>

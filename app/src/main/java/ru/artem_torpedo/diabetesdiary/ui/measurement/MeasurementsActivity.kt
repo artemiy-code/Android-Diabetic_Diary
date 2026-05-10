@@ -154,7 +154,7 @@ class MeasurementsActivity : AppCompatActivity() {
 
     private fun showAddOrEditDialog(
         profileId: Long,
-        existing: MeasurementEntity?
+        existing: MeasurementEntity?,
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_measurement, null)
 
@@ -190,7 +190,7 @@ class MeasurementsActivity : AppCompatActivity() {
                     if (raw.isBlank()) null
                     else {
                         val v = raw.toFloat()
-                        if (v <= 1f || v > 70f) {
+                        if (v !in 1f..70f) {
                             glucoseInput.error = "Диапазон 1–70"
                             glucoseInput.requestFocus()
                             Toast.makeText(this, "Аномальный сахар", Toast.LENGTH_SHORT).show()
@@ -237,7 +237,8 @@ class MeasurementsActivity : AppCompatActivity() {
                 }
 
                 if (insulin != null && breadUnits != null && insulin / breadUnits > 4) {
-                    Toast.makeText(this, "Нельзя вводить столько инсулина!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Нельзя вводить столько инсулина!", Toast.LENGTH_SHORT)
+                        .show()
                     return@setOnClickListener
                 }
 
@@ -269,8 +270,6 @@ class MeasurementsActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
-
 
 
     private fun formatDate(timeMillis: Long): String {

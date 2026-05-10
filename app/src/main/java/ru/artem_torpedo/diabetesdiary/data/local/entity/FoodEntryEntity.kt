@@ -34,5 +34,5 @@ data class FoodEntryEntity(
     val productId: Long,
     val grams: Float,
     val dateTime: Long = System.currentTimeMillis(),
-    val comment: String? = null
+    val comment: String? = null,
 )

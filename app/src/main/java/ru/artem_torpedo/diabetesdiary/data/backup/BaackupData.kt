@@ -9,5 +9,5 @@ data class BackupData(
     val measurements: List<MeasurementEntity>,
     val products: List<ProductEntity>,
     val foodEntries: List<FoodEntryEntity>,
-    val reminders: List<ReminderEntity>
+    val reminders: List<ReminderEntity>,
 )

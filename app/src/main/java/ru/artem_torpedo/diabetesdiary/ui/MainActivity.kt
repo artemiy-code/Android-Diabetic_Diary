@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
                     ).show()
 
                 } catch (e: Exception) {
-
                     Toast.makeText(
                         this@MainActivity,
                         "Ошибка экспорта",
@@ -82,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                     viewModel.loadProfiles()
 
                 } catch (e: Exception) {
-
                     Toast.makeText(
                         this@MainActivity,
                         "Ошибка импорта",

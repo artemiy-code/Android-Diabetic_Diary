@@ -13,36 +13,39 @@
             android:id="@+id/titleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Название напоминания" />
+            android:hint="@string/reminder_name"
+            android:importantForAutofill="no"
+            android:inputType="textNoSuggestions" />
 
         <EditText
             android:id="@+id/noteEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Комментарий"
-            android:inputType="textMultiLine" />
+            android:hint="@string/comment"
+            android:importantForAutofill="no"
+            android:inputType="textNoSuggestions" />
 
         <Button
             android:id="@+id/dateButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Выбрать дату" />
+            android:text="@string/choose_date" />
 
         <Button
             android:id="@+id/timeButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Выбрать время" />
+            android:text="@string/choose_time" />
 
         <CheckBox
             android:id="@+id/repeatDailyCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Повторять ежедневно" />
+            android:text="@string/repeat_daily" />
 
         <CheckBox
             android:id="@+id/enabledCheckBox"
@@ -50,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:checked="true"
-            android:text="Включено" />
+            android:text="@string/enabled" />
 
     </LinearLayout>
 </ScrollView>

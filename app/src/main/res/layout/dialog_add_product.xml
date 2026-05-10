@@ -13,34 +13,40 @@
             android:id="@+id/nameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Название продукта :" />
+            android:autofillHints="product"
+            android:hint="@string/product_name"
+            android:inputType="textNoSuggestions" />
 
         <EditText
             android:id="@+id/proteinInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Белки на 100 г :"
+            android:autofillHints="number"
+            android:hint="@string/protein_on_100_grams"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/fatInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Жиры на 100 г :"
+            android:autofillHints="number"
+            android:hint="@string/fats_on_100_grams"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/carbsInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Углеводы на 100 г :"
+            android:autofillHints="number"
+            android:hint="@string/carbs_on_100_grams"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/caloriesInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Калории (опционально)"
+            android:autofillHints="number"
+            android:hint="@string/calories_optional"
             android:inputType="numberDecimal" />
 
     </LinearLayout>

@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import ru.artem_torpedo.diabetesdiary.R
 import ru.artem_torpedo.diabetesdiary.data.local.entity.ReminderEntity
 import java.util.Calendar
 

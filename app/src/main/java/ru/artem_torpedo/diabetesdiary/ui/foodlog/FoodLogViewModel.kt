@@ -53,7 +53,7 @@ class FoodLogViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateEntry(
         profileId: Long,
-        foodLog : FoodEntryEntity
+        foodLog: FoodEntryEntity,
     ) {
         viewModelScope.launch {
             foodRepo.updateEntry(foodLog)

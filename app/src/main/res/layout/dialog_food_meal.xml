@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,21 +10,21 @@
         android:id="@+id/totalMealText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Итого"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:text="@string/total"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/mealProductsList"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp" />
 
     <Button
         android:id="@+id/addMealProductButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Добавить продукт"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp"
+        android:text="@string/add_product" />
 
 </LinearLayout>

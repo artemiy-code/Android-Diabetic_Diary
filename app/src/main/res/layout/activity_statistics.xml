@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,10 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,15 +25,15 @@
                 android:id="@+id/periodText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Период: —"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Период: —" />
 
             <Button
                 android:id="@+id/filterButtonStats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Фильтр по дате" />
+                android:text="@string/date_filter" />
 
             <LinearLayout
                 android:id="@+id/statisticsInfoBlock"
@@ -44,50 +45,50 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Средний сахар:" />
+                    android:text="@string/average_sugar" />
 
                 <TextView
                     android:id="@+id/avgValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="—"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="—" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Минимум:" />
+                    android:text="@string/min" />
 
                 <TextView
                     android:id="@+id/minValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="—" />
+                    tools:text="—" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Максимум:" />
+                    android:text="@string/max" />
 
                 <TextView
                     android:id="@+id/maxValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="—" />
+                    tools:text="—" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Количество измерений:" />
+                    android:text="@string/number_of_measurements" />
 
                 <TextView
                     android:id="@+id/countValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0" />
+                    tools:text="0" />
             </LinearLayout>
 
             <com.github.mikephil.charting.charts.LineChart
@@ -101,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Питание"
+                android:text="@string/nutrition"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -110,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Средние значения: —" />
+                android:text="@string/average_value" />
 
             <LinearLayout
                 android:id="@+id/nutritionLegendLayout"
@@ -123,107 +124,107 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="4dp">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="#FF9800"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:background="#FF9800" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Калории" />
+                        android:text="@string/calories" />
 
                     <TextView
                         android:id="@+id/caloriesAvgValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0" />
+                        tools:text="0" />
                 </LinearLayout>
 
                 <!-- Белки -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="4dp">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="#4CAF50"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:background="#4CAF50" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Белки" />
+                        android:text="@string/protein" />
 
                     <TextView
                         android:id="@+id/proteinAvgValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0" />
+                        tools:text="0" />
                 </LinearLayout>
 
                 <!-- Жиры -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="4dp">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="#F44336"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:background="#F44336" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Жиры" />
+                        android:text="@string/fats" />
 
                     <TextView
                         android:id="@+id/fatAvgValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0" />
+                        tools:text="0" />
                 </LinearLayout>
 
                 <!-- Углеводы -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="#2196F3"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:background="#2196F3" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Углеводы" />
+                        android:text="@string/carbs" />
 
                     <TextView
                         android:id="@+id/carbsAvgValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0" />
+                        tools:text="0" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -244,10 +245,10 @@
         android:layout_height="56dp"
         app:itemIconSize="26dp"
         app:itemPaddingTop="22dp"
-        app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,17 +8,18 @@
         android:id="@+id/searchInput"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:hint="Поиск продукта"
-        android:inputType="text"
-        android:padding="10dp"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="20dp"
-        android:maxLines="1"
-        android:singleLine="true"
+        android:autofillHints="name"
+        android:hint="@string/search_product"
         android:imeOptions="actionDone"
-        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="text"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/productsList"
@@ -30,10 +31,10 @@
         android:layout_marginBottom="12dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
-        app:layout_constraintTop_toBottomOf="@id/searchInput"
         app:layout_constraintBottom_toTopOf="@id/addProductButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/searchInput" />
 
     <Button
         android:id="@+id/addProductButton"
@@ -42,10 +43,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
-        android:text="Добавить продукт"
+        android:text="@string/add_product"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -53,10 +54,10 @@
         android:layout_height="56dp"
         app:itemIconSize="26dp"
         app:itemPaddingTop="22dp"
-        app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

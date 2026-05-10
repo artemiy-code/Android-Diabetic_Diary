@@ -43,7 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "diabetes_diary_db"
-                ).fallbackToDestructiveMigration()
+                ).fallbackToDestructiveMigration(false)
                     .build().also {
                         INSTANCE = it
                     }

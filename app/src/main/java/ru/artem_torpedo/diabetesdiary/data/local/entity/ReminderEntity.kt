@@ -24,5 +24,5 @@ data class ReminderEntity(
     val note: String?,
     val triggerAtMillis: Long,
     val repeatDaily: Boolean,
-    val enabled: Boolean
+    val enabled: Boolean,
 )

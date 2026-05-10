@@ -13,28 +13,32 @@
             android:id="@+id/glucoseInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Сахар (ммоль/л)"
+            android:autofillHints="number"
+            android:hint="@string/sugar_input"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/insulinInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Инсулин (ЕД)"
+            android:autofillHints="number"
+            android:hint="@string/insulin_input"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/breadUnitsInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Хлебные единицы"
+            android:autofillHints="number"
+            android:hint="@string/bread_units_input"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/commentInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Комментарий"
+            android:autofillHints="number"
+            android:hint="@string/comment"
             android:inputType="textMultiLine" />
 
     </LinearLayout>

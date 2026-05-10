@@ -5,5 +5,5 @@ data class DailyNutritionPoint(
     val totalCalories: Float,
     val totalProtein: Float,
     val totalFat: Float,
-    val totalCarbs: Float
+    val totalCarbs: Float,
 )

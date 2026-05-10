@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Diabetes Diary</string>
+    <string name="export_import">Data transfer</string>
+    <string name="add_measurement">Add measurement</string>
+    <string name="search_product">Product search</string>
+    <string name="add_product">Add product</string>
+    <string name="patients_profile">Your profiles</string>
+    <string name="add_profile">Add profile</string>
+    <string name="add_reminder">Add reminder</string>
+    <string name="average_sugar">Average sugar:</string>
+    <string name="nutrition">Nutrition</string>
+    <string name="average_value">Average values</string>
+    <string name="sugar_input">Sugar (mmol/l)</string>
+    <string name="insulin_input">Insulin (units)</string>
+    <string name="bread_units_input">Bread units</string>
+    <string name="calories">Calories</string>
+    <string name="carbs_on_100_grams">Carbs per 100 g:</string>
+    <string name="calories_optional">Calories (optional)</string>
+    <string name="protein">Protein</string>
+    <string name="fats">Fats</string>
+    <string name="carbs">Carbohydrates</string>
+    <string name="reminder_name">Reminder name</string>
+    <string name="choose_date">Choose date</string>
+    <string name="choose_time">Choose time</string>
+    <string name="grams">Grams</string>
+    <string name="comment">Comments</string>
+    <string name="sugar">Sugar: %s</string>
+    <string name="sugar_simple">Sugar:</string>
+    <string name="date_filter">Filter by date</string>
+    <string name="date">Date: %s</string>
+    <string name="date_simple">Date</string>
+    <string name="repeat_daily">Repeat daily</string>
+    <string name="enabled">Enabled</string>
+    <string name="food_taking">Add food intake</string>
+    <string name="min">Minimum:</string>
+    <string name="max">Maximum:</string>
+    <string name="number_of_measurements">Number of measurements:</string>
+    <string name="product_name">Product name:</string>
+    <string name="protein_on_100_grams">Proteins per 100 g:</string>
+    <string name="fats_on_100_grams">Fats per 100 g:</string>
+    <string name="total">Total</string>
+    <string name="calories_per_period">Calories in period: %</string>
+    <string name="product">Product: %s</string>
+    <string name="total_meal">Ccal %1$s | P %2$s | F %3$s | C %4$s</string>
+    <string name="time">Time: %s</string>
+</resources>
