@@ -132,7 +132,7 @@ class StatisticsActivity : AppCompatActivity() {
             countText.text = state.count.toString()
             renderChart(state.points)
 
-            nutritionAvgText.text = "Среднее в день:"
+            nutritionAvgText.text = "Среднее по дням:"
 
             caloriesAvgValue.text = format1(state.avgCaloriesPerDay)
             proteinAvgValue.text = format1(state.avgProteinPerDay)

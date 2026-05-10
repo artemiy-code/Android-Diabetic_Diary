@@ -87,13 +87,6 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
                 (it.carbsPer100g * it.grams / 100f).toDouble()
             }.toFloat()
 
-            val days = daysInRange(fromDate, toDate)
-
-            val avgCaloriesPerDay = totalCalories / days
-            val avgProteinPerDay = totalProtein / days
-            val avgFatPerDay = totalFat / days
-            val avgCarbsPerDay = totalCarbs / days
-
             val foodByDay = foodEntries.groupBy { startOfDay(it.dateTime) }
 
             val nutritionPoints = foodByDay.toSortedMap().map { (dayMillis, entries) ->
@@ -113,6 +106,20 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
                     }.toFloat()
                 )
             }
+
+            val daysWithFood = nutritionPoints.size.coerceAtLeast(1)
+
+            val avgCaloriesPerDay =
+                nutritionPoints.sumOf { it.totalCalories.toDouble() }.toFloat() / daysWithFood
+
+            val avgProteinPerDay =
+                nutritionPoints.sumOf { it.totalProtein.toDouble() }.toFloat() / daysWithFood
+
+            val avgFatPerDay =
+                nutritionPoints.sumOf { it.totalFat.toDouble() }.toFloat() / daysWithFood
+
+            val avgCarbsPerDay =
+                nutritionPoints.sumOf { it.totalCarbs.toDouble() }.toFloat() / daysWithFood
 
             val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
             val label = "Период: ${sdf.format(Date(fromDate))} - ${sdf.format(Date(toDate))}"

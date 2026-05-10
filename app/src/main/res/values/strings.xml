@@ -22,7 +22,7 @@
     <string name="max">Максимум:</string>
     <string name="number_of_measurements">Количество измерений:</string>
     <string name="nutrition">Питание</string>
-    <string name="average_value">Средние значения</string>
+    <string name="average_value">Среднее по дням</string>
     <string name="calories">Калории</string>
     <string name="protein">Белки</string>
     <string name="fats">Жиры</string>
