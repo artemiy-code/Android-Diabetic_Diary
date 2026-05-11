@@ -20,7 +20,6 @@ import ru.artem_torpedo.diabetesdiary.ui.products.ProductsActivity
 import ru.artem_torpedo.diabetesdiary.ui.statistics.StatisticsActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class RemindersActivity : AppCompatActivity() {
@@ -31,12 +30,10 @@ class RemindersActivity : AppCompatActivity() {
     private var profileName: String = ""
 
     private var reminderList: List<ReminderEntity> = emptyList()
-    private lateinit var adapter: ArrayAdapter<String>
-    private val items = mutableListOf<String>()
+    private lateinit var adapter: ReminderAdapter
 
     private val dateFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateTimeFormatter = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +68,43 @@ class RemindersActivity : AppCompatActivity() {
         val listView: ListView = findViewById(R.id.remindersList)
         val addButton: Button = findViewById(R.id.addReminderButton)
 
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
+        adapter = ReminderAdapter(
+            context = this,
+            reminders = emptyList()
+        ) { reminder, isEnabled ->
+
+            val now = System.currentTimeMillis()
+
+            if (
+                isEnabled &&
+                !reminder.repeatDaily &&
+                reminder.triggerAtMillis <= now
+            ) {
+
+                Toast.makeText(
+                    this,
+                    "Нельзя включить одноразовое напоминание с прошедшей датой",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                adapter.submitList(reminderList)
+                return@ReminderAdapter
+            }
+
+            val updated = reminder.copy(enabled = isEnabled)
+
+            viewModel.update(updated) {
+
+                if (isEnabled) {
+                    ReminderScheduler.schedule(this, updated)
+                } else {
+                    ReminderScheduler.cancel(this, updated.id)
+                }
+
+                viewModel.load(profileId)
+            }
+        }
+
         listView.adapter = adapter
 
         // обычный тап = редактирование
@@ -117,21 +150,7 @@ class RemindersActivity : AppCompatActivity() {
 
         viewModel.reminders.observe(this) { list ->
             reminderList = list
-            items.clear()
-            items.addAll(list.map { r ->
-                val state = if (r.enabled) "Включено" else "Выключено"
-                val repeat = if (r.repeatDaily) "Ежедневно" else "Однократно"
-
-                buildString {
-                    append(dateTimeFormatter.format(Date(r.triggerAtMillis)))
-                    append("  ")
-                    append(r.title)
-                    append("\n")
-                    append("$state, $repeat")
-                    r.note?.takeIf { it.isNotBlank() }?.let { append("\n$it") }
-                }
-            })
-            adapter.notifyDataSetChanged()
+            adapter.submitList(list)
         }
 
         viewModel.load(profileId)

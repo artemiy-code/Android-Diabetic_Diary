@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:descendantFocusability="blocksDescendants">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/reminderTitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Название"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/reminderDateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Дата и время"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/reminderNoteText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Комментарий"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/reminderSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="" />
+
+</LinearLayout>

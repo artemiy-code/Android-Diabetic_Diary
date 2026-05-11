@@ -29,6 +29,9 @@ object ReminderScheduler {
         )
 
         val triggerAt = computeNextTrigger(reminder.triggerAtMillis, reminder.repeatDaily)
+        if (!reminder.repeatDaily && triggerAt <= System.currentTimeMillis()) {
+            return
+        }
 
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
