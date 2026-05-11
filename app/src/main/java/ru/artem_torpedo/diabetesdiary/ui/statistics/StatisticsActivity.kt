@@ -277,6 +277,7 @@ class StatisticsActivity : AppCompatActivity() {
             lineWidth = 2f
             circleRadius = 3f
             setDrawValues(false)
+            setDrawHorizontalHighlightIndicator(false)
         }
 
         val proteinSet = LineDataSet(proteinEntries, "Белки").apply {
@@ -285,6 +286,7 @@ class StatisticsActivity : AppCompatActivity() {
             lineWidth = 2f
             circleRadius = 3f
             setDrawValues(false)
+            setDrawHorizontalHighlightIndicator(false)
         }
 
         val fatSet = LineDataSet(fatEntries, "Жиры").apply {
@@ -293,6 +295,7 @@ class StatisticsActivity : AppCompatActivity() {
             lineWidth = 2f
             circleRadius = 3f
             setDrawValues(false)
+            setDrawHorizontalHighlightIndicator(false)
         }
 
         val carbsSet = LineDataSet(carbsEntries, "Углеводы").apply {
@@ -301,6 +304,7 @@ class StatisticsActivity : AppCompatActivity() {
             lineWidth = 2f
             circleRadius = 3f
             setDrawValues(false)
+            setDrawHorizontalHighlightIndicator(false)
         }
 
         nutritionChart.data = LineData(
@@ -320,6 +324,12 @@ class StatisticsActivity : AppCompatActivity() {
                 } else ""
             }
         }
+
+        nutritionChart.marker = NutritionMarkerView(
+            this,
+            R.layout.view_nutrition_marker,
+            points
+        )
 
         nutritionChart.invalidate()
     }

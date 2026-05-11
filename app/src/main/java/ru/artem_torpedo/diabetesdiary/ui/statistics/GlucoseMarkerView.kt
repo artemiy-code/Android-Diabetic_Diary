@@ -36,6 +36,6 @@ class GlucoseMarkerView(
 
     override fun getOffset() = com.github.mikephil.charting.utils.MPPointF(
         -(width / 1f),
-        y
+        -( height / 1f)
     )
 }
