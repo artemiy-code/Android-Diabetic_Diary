@@ -139,7 +139,7 @@ class FoodLogActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             val total = list.sumOf { (it.grams * it.caloriesPer100g / 100f).toDouble() }.toFloat()
-            totalCaloriesText.text = getString(R.string.calories_per_period, fmt1(total))
+            totalCaloriesText.text = "Калории за период: ${fmt1(total)}"
         }
 
         viewModel.loadProducts()
